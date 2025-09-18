@@ -14,7 +14,9 @@ public class db {
             System.out.println("JDBC DRIVER is missing"); 
         }
     }
-    public Connection getDBConnection() throws SQLException {
+    public static Connection getDBConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+    }
+    public class getDBConnection {
     }
 }

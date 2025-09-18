@@ -11,10 +11,9 @@ import com.todo.util.db;
 
 public class Main {
     public static void main(String[] args) {
-        db databaseConnection = new db();
         //DatabaseConnection databaseConnection = new DatabaseConnection();
         try {
-            Connection cn = databaseConnection.getDBConnection();
+            Connection cn = db.getDBConnection();
             System.out.println("Connection Successful");
             //Connection cn = databaseConnection.getDBConnection();
         } 
