@@ -69,7 +69,7 @@ public class TodoAppGui extends JFrame {
         filterComboBox.addActionListener(
             (e) -> {
                 String opt = (String)filterComboBox.getSelectedItem();
-                filterTodos();
+                filterTodo();
             }
         );
     }
@@ -79,11 +79,28 @@ public class TodoAppGui extends JFrame {
             loadTodos();
         }
         else if("Completed".equals(option)) {
-            //filterTodosByCompletion(true);
+
+            try {
+                List<Todo> filderedTable = todoAppDAO.filterTodo(true);
+                updateTable(filderedTable);
             
+            }
+            catch(SQLException e){
+                JOptionPane.showMessageDialog(this, "Error deleting todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace(); 
+            }
+
+            // try{//     boolean check = todoAppDAO.filterTodo(true);//     if(check) {//         List<Todo> todos = todoAppDAO.getAllTodos();//         updateTable(todos);//     }// }// todoAppDAO.filterTodo(true);
         }
         else if("Pending".equals(option)) {
-            //filterTodosByCompletion(false);
+            try {
+                List<Todo> filderedTable = todoAppDAO.filterTodo(false);
+                updateTable(filderedTable);
+            }
+            catch(SQLException e){
+                JOptionPane.showMessageDialog(this, "Error deleting todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace(); 
+            }
         }
     }
     // private void setupEventListeners() {
@@ -259,7 +276,6 @@ public class TodoAppGui extends JFrame {
     private void refreshTodo(){
         loadTodos();
     }
-    private 
     private void loadTodos(){
         try {
             List<Todo> todos = todoAppDAO.getAllTodos();

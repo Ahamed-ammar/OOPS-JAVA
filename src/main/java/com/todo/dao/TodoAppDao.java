@@ -15,7 +15,7 @@ public class TodoAppDao {
     private static final String INSERT_TODO = "INSERT INTO todos (title, description, completed, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_TODO = "UPDATE todos SET title = ?, description = ?, completed = ?, updated_at = ? WHERE id = ?";
     private static final String DELETE_TODO = "DELETE FROM todos WHERE id = ?";
-
+    private static final String FILTER_TODO = "SELECT * FROM todos WHERE completed = ? ORDER BY created_at DESC";
     //Create a New Todo
     public int createtodo(Todo todo) throws SQLException {
         try (
@@ -125,5 +125,25 @@ public class TodoAppDao {
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;
         }
+    }
+    public List<Todo> filterTodo(boolean check) throws SQLException {
+        List<Todo> todos = new ArrayList<>();
+        try(Connection conn = db.getDBConnection();
+        PreparedStatement stmt = conn.prepareStatement(FILTER_TODO);
+        ) {
+            //stmt.setBoolean(1, check);
+            stmt.setBoolean(1, check);
+            // if(check) {
+            //     stmt.setBoolean(1, true);
+            // }
+            // else {
+            //     stmt.setBoolean(1, false);
+            // }
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                todos.add(getTodoRow(rs));
+            }
+            return todos;
+        } 
     }
 }
