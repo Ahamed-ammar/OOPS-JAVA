@@ -14,6 +14,7 @@ public class TodoAppDao {
     private static final String SELECT_TODO_BY_ID = "SELECT * FROM todos WHERE id = ?";
     private static final String INSERT_TODO = "INSERT INTO todos (title, description, completed, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_TODO = "UPDATE todos SET title = ?, description = ?, completed = ?, updated_at = ? WHERE id = ?";
+    private static final String DELETE_TODO = "DELETE FROM todos WHERE id = ?";
 
     //Create a New Todo
     public int createtodo(Todo todo) throws SQLException {
@@ -30,10 +31,10 @@ public class TodoAppDao {
             
             int rowAffected = stmt.executeUpdate();
                 if(rowAffected == 0){
-                throw new SQLException("Creating todo failed, no rows affected.");
+                    throw new SQLException("Creating todo failed, no rows affected.");
                 }
             }
-        return 0;
+        return 1;
     }
 
     public Todo getTodoById(int todoId) throws SQLException {
@@ -64,7 +65,7 @@ public class TodoAppDao {
     public List<Todo> getAllTodos() throws SQLException{
         List<Todo> todos = new ArrayList<>();
         try(Connection conn = db.getDBConnection();
-            PreparedStatement stmt = conn.prepareStatement(SELECT_ALL_TODOS);
+            PreparedStatement stmt = conn.prepareStatement(SELECT_ALL_TODOS); 
             //PreparedStatement stmt = conn.prepareStatement("SELECT * FROM todo Order By created_at DESC");
             ResultSet rs = stmt.executeQuery();
             )
@@ -102,13 +103,15 @@ public class TodoAppDao {
     public static String getInsertTodo() {
         return INSERT_TODO;
     }
-
-
-    public int addTodo(Todo todo) {
-        // TODO Auto-generated method stub
-        return 0;
+    public boolean deleteTodo(int todoId) throws SQLException {
+        try (Connection conn = db.getDBConnection();
+            PreparedStatement stmt = conn.prepareStatement(DELETE_TODO);
+        ){
+            stmt.setInt(1, todoId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
     }
-
     public boolean updateTodo(Todo todo) throws SQLException {
         try (Connection conn = db.getDBConnection();
             PreparedStatement stmt = conn.prepareStatement(UPDATE_TODO);

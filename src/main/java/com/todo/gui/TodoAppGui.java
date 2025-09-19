@@ -10,8 +10,10 @@ import java.sql.SQLException;
 
 public class TodoAppGui extends JFrame {
     private TodoAppDao todoAppDAO;
+
     private JTable todoTable;
     private DefaultTableModel tableModel;
+
     private JTextField titleField;
     private JTextArea descriptionArea;
     private JCheckBox completedCheckBox;
@@ -62,14 +64,40 @@ public class TodoAppGui extends JFrame {
         deleteButton = new JButton("Delete Todo");
         refreshButton = new JButton("Refresh Todo");
         String[] filterOptions = {"All", "Completed", "Pending"};
+
         filterComboBox = new JComboBox<>(filterOptions);
         filterComboBox.addActionListener(
             (e) -> {
-                
+                String opt = (String)filterComboBox.getSelectedItem();
+                filterTodos();
             }
         );
     }
-
+    private void filterTodo() {
+        String option = (String) filterComboBox.getSelectedItem();
+        if("All".equals(option)) {
+            loadTodos();
+        }
+        else if("Completed".equals(option)) {
+            //filterTodosByCompletion(true);
+            
+        }
+        else if("Pending".equals(option)) {
+            //filterTodosByCompletion(false);
+        }
+    }
+    // private void setupEventListeners() {
+    //     addButton.addActionListener(
+    //         (e) ->{addTodo();});
+    //     updateButton.addActionListener(
+    //         (e) ->{updateTodo();});
+    //     deleteButton.addActionListener(
+    //         (e) ->{deleteTodo();});
+    //     refreshButton.addActionListener(
+    //         (e) ->{refreshTodo();});
+    //     completedCheckBox.addActionListener(
+    //         (e) ->{});
+    // }
     private void setupLayout() {
         setLayout(new BorderLayout());
 
@@ -130,6 +158,8 @@ public class TodoAppGui extends JFrame {
             (e) ->{deleteTodo();});
         refreshButton.addActionListener(
             (e) ->{refreshTodo();});
+        completedCheckBox.addActionListener(
+            (e) ->{});
     }
 
     private void addTodo(){
@@ -147,7 +177,7 @@ public class TodoAppGui extends JFrame {
         todo.setCompleted(completed);
 
         try {
-            int result = todoAppDAO.addTodo(todo);
+            int result = todoAppDAO.createtodo(todo);
             if(result > 0){
                 JOptionPane.showMessageDialog(this, "Todo added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                 titleField.setText("");
@@ -200,11 +230,36 @@ public class TodoAppGui extends JFrame {
         boolean completed = completedCheckBox.isSelected();
     }
     private void deleteTodo(){
-
+        int row = todoTable.getSelectedRow();
+        if(row < 0){
+            JOptionPane.showMessageDialog(this, "Please select a todo to delete", "Selection Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this todo?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+        if(confirm != JOptionPane.YES_OPTION){
+            return;
+        }
+        int id = (int) todoTable.getValueAt(row, 0);
+        try {
+            boolean result = todoAppDAO.deleteTodo(id);
+            if(result){
+                JOptionPane.showMessageDialog(this, "Todo deleted successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                // titleField.setText("");
+                // descriptionArea.setText("");
+                // completedCheckBox.setSelected(false);
+                loadTodos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete todo", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch(SQLException e){
+            JOptionPane.showMessageDialog(this, "Error deleting todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace(); 
+        }
     }
     private void refreshTodo(){
         loadTodos();
     }
+    private 
     private void loadTodos(){
         try {
             List<Todo> todos = todoAppDAO.getAllTodos();
