@@ -10,8 +10,10 @@ import com.todo.util.db;
 
 public class TodoAppDao {
 
-    private static final String SELECT_ALL_TODOS = "select * from todos";// ORDER BY created_at DESC";
-    private static final String INSERT_TODO = "INSERT INTO todo (title, description, completed, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
+    private static final String SELECT_ALL_TODOS = "select * from todos ORDER BY created_at DESC";
+    private static final String SELECT_TODO_BY_ID = "SELECT * FROM todos WHERE id = ?";
+    private static final String INSERT_TODO = "INSERT INTO todos (title, description, completed, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE_TODO = "UPDATE todos SET title = ?, description = ?, completed = ?, updated_at = ? WHERE id = ?";
 
     //Create a New Todo
     public int createtodo(Todo todo) throws SQLException {
@@ -34,6 +36,19 @@ public class TodoAppDao {
         return 0;
     }
 
+    public Todo getTodoById(int todoId) throws SQLException {
+        // TODO Auto-generated method stub
+        try (Connection conn = db.getDBConnection();
+        PreparedStatement stmt = conn.prepareStatement(SELECT_TODO_BY_ID);) {
+            stmt.setInt(1, todoId);
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                return getTodoRow(rs);
+            }
+
+        }
+        return null;
+    }
 
     private Todo getTodoRow(ResultSet res) throws SQLException {
 
@@ -86,5 +101,26 @@ public class TodoAppDao {
 
     public static String getInsertTodo() {
         return INSERT_TODO;
+    }
+
+
+    public int addTodo(Todo todo) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    public boolean updateTodo(Todo todo) throws SQLException {
+        try (Connection conn = db.getDBConnection();
+            PreparedStatement stmt = conn.prepareStatement(UPDATE_TODO);
+            
+        ){
+            stmt.setString(1, todo.getTitle());
+            stmt.setString(2, todo.getDescription());
+            stmt.setBoolean(3, todo.isCompleted());
+            stmt.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setInt(5, todo.getId());
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
     }
 }
