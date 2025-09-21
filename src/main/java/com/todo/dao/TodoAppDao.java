@@ -12,7 +12,7 @@ public class TodoAppDao {
 
     private static final String SELECT_ALL_TODOS = "select * from todos ORDER BY created_at DESC";
     private static final String SELECT_TODO_BY_ID = "SELECT * FROM todos WHERE id = ?";
-    private static final String INSERT_TODO = "INSERT INTO todos (title, description, completed, created_at, updated_at) VALUES (?, ?, ?, ?, ?)";
+    private static final String INSERT_TODO = "INSERT INTO todos (id, title, description, completed, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_TODO = "UPDATE todos SET title = ?, description = ?, completed = ?, updated_at = ? WHERE id = ?";
     private static final String DELETE_TODO = "DELETE FROM todos WHERE id = ?";
     private static final String FILTER_TODO = "SELECT * FROM todos WHERE completed = ? ORDER BY created_at DESC";
@@ -23,12 +23,18 @@ public class TodoAppDao {
             PreparedStatement stmt = conn.prepareStatement(INSERT_TODO, Statement.RETURN_GENERATED_KEYS);
         ) {
             System.out.println("Connecting to database...");
-            stmt.setString(1, todo.getTitle());
-            stmt.setString(2, todo.getDescription());
-            stmt.setBoolean(3, todo.isCompleted());
-            stmt.setTimestamp(4, java.sql.Timestamp.valueOf(todo.getCreated_at()));
-            stmt.setObject(5, todo.getUpdated_at());
-            
+            // stmt.setInt(0, todo.getId());
+            // stmt.setString(1, todo.getTitle());
+            // stmt.setString(2, todo.getDescription());
+            // stmt.setBoolean(3, todo.isCompleted());
+            // stmt.setTimestamp(4, java.sql.Timestamp.valueOf(todo.getCreated_at()));
+            // stmt.setObject(5, todo.getUpdated_at());
+            stmt.setInt(1, todo.getId());
+            stmt.setString(2, todo.getTitle());
+            stmt.setString(3, todo.getDescription());
+            stmt.setBoolean(4, todo.isCompleted());
+            stmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setObject(6, todo.getUpdated_at());
             int rowAffected = stmt.executeUpdate();
                 if(rowAffected == 0){
                     throw new SQLException("Creating todo failed, no rows affected.");

@@ -5,7 +5,6 @@ import java.awt.*;
 import com.todo.dao.TodoAppDao;
 import java.util.List;
 import com.todo.model.Todo;
-import com.todo.util.db;
 import java.sql.SQLException;
 
 public class TodoAppGui extends JFrame {
@@ -54,7 +53,7 @@ public class TodoAppGui extends JFrame {
             }
         );
 
-        titleField = new JTextField(20);
+        this.titleField = new JTextField(20);
         descriptionArea = new JTextArea(3, 20);
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
@@ -66,42 +65,13 @@ public class TodoAppGui extends JFrame {
         String[] filterOptions = {"All", "Completed", "Pending"};
 
         filterComboBox = new JComboBox<>(filterOptions);
+
         filterComboBox.addActionListener(
             (e) -> {
                 String opt = (String)filterComboBox.getSelectedItem();
                 filterTodo();
             }
         );
-    }
-    private void filterTodo() {
-        String option = (String) filterComboBox.getSelectedItem();
-        if("All".equals(option)) {
-            loadTodos();
-        }
-        else if("Completed".equals(option)) {
-
-            try {
-                List<Todo> filderedTable = todoAppDAO.filterTodo(true);
-                updateTable(filderedTable);
-            
-            }
-            catch(SQLException e){
-                JOptionPane.showMessageDialog(this, "Error deleting todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace(); 
-            }
-
-            // try{//     boolean check = todoAppDAO.filterTodo(true);//     if(check) {//         List<Todo> todos = todoAppDAO.getAllTodos();//         updateTable(todos);//     }// }// todoAppDAO.filterTodo(true);
-        }
-        else if("Pending".equals(option)) {
-            try {
-                List<Todo> filderedTable = todoAppDAO.filterTodo(false);
-                updateTable(filderedTable);
-            }
-            catch(SQLException e){
-                JOptionPane.showMessageDialog(this, "Error deleting todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace(); 
-            }
-        }
     }
     // private void setupEventListeners() {
     //     addButton.addActionListener(
@@ -189,9 +159,12 @@ public class TodoAppGui extends JFrame {
             return;
         }  
         Todo todo = new Todo();
+        int size = tableModel.getRowCount();
+        todo.setId(size + 1);
         todo.setTitle(title);
         todo.setDescription(description);
         todo.setCompleted(completed);
+        
 
         try {
             int result = todoAppDAO.createtodo(todo);
@@ -273,6 +246,36 @@ public class TodoAppGui extends JFrame {
             e.printStackTrace(); 
         }
     }
+    private void filterTodo() {
+        String option = (String) filterComboBox.getSelectedItem();
+        if("All".equals(option)) {
+            loadTodos();
+        }
+        else if("Completed".equals(option)) {
+
+            try {
+                List<Todo> filderedTable = todoAppDAO.filterTodo(true);
+                updateTable(filderedTable);
+            
+            }
+            catch(SQLException e){
+                JOptionPane.showMessageDialog(this, "Error deleting todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace(); 
+            }
+
+            // try{//     boolean check = todoAppDAO.filterTodo(true);//     if(check) {//         List<Todo> todos = todoAppDAO.getAllTodos();//         updateTable(todos);//     }// }// todoAppDAO.filterTodo(true);
+        }
+        else if("Pending".equals(option)) {
+            try {
+                List<Todo> filderedTable = todoAppDAO.filterTodo(false);
+                updateTable(filderedTable);
+            }
+            catch(SQLException e){
+                JOptionPane.showMessageDialog(this, "Error deleting todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace(); 
+            }
+        }
+    }
     private void refreshTodo(){
         loadTodos();
     }
@@ -305,9 +308,11 @@ public class TodoAppGui extends JFrame {
     }
     private void updateTable(List<Todo> todos){
         tableModel.setRowCount(0);
+        //todoTable.setRowHeight(0);
         for(Todo todo : todos){
             Object[] row = {todo.getId(), todo.getTitle(), todo.getDescription(), todo.isCompleted(), todo.getCreated_at(), todo.getUpdated_at()};
             tableModel.addRow(row);
+            //todoTable.setRowHeight(25);
         }
     }
 }

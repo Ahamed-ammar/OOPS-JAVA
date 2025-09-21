@@ -8,12 +8,12 @@ public class Todo {
     private boolean completed;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
-   public Todo(){
+    public Todo(){
        this.created_at = LocalDateTime.now();
        this.updated_at = LocalDateTime.now();
    }
     public Todo(String title, String description) {
-        this();
+        //this();
         this.title = title;
         this.description = description;
     }
@@ -26,7 +26,6 @@ public class Todo {
         this.completed = completed;
         this.updated_at = updated_at;
     }
-
     public int getId() {
         return id;
     }

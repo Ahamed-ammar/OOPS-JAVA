@@ -5,3 +5,4 @@ com\todo\Main.class
 com\todo\gui\TodoAppGui.class
 com\todo\gui\TodoAppGui$1.class
 com\todo\SqlException.class
+com\todo\util\db$getDBConnection.class
