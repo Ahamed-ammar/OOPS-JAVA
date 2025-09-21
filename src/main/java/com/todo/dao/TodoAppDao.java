@@ -3,14 +3,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
-import javax.xml.crypto.Data;
+//import javax.xml.crypto.Data;
 import com.todo.model.Todo;
 import com.todo.util.db;
 //import com.todo.util.db;
 
 public class TodoAppDao {
 
-    private static final String SELECT_ALL_TODOS = "select * from todos ORDER BY created_at DESC";
+    private static final String SELECT_ALL_TODOS = "select * from todos ORDER BY id";
     private static final String SELECT_TODO_BY_ID = "SELECT * FROM todos WHERE id = ?";
     private static final String INSERT_TODO = "INSERT INTO todos (id, title, description, completed, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_TODO = "UPDATE todos SET title = ?, description = ?, completed = ?, updated_at = ? WHERE id = ?";
