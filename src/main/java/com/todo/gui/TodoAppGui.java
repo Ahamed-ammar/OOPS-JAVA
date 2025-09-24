@@ -44,6 +44,7 @@ public class TodoAppGui extends JFrame {
             }
         };
         todoTable = new JTable(tableModel);
+
         todoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         todoTable.getSelectionModel().addListSelectionListener(
             (e) -> {
@@ -137,6 +138,7 @@ public class TodoAppGui extends JFrame {
     }
 
     private void setupEventListeners() {
+
         addButton.addActionListener(
             (e) ->{addTodo();});
         updateButton.addActionListener(
@@ -147,6 +149,7 @@ public class TodoAppGui extends JFrame {
             (e) ->{refreshTodo();});
         completedCheckBox.addActionListener(
             (e) ->{});
+
     }
 
     private void addTodo(){
@@ -164,7 +167,7 @@ public class TodoAppGui extends JFrame {
         todo.setTitle(title);
         todo.setDescription(description);
         todo.setCompleted(completed);
-        
+         
 
         try {
             int result = todoAppDAO.createtodo(todo);
@@ -183,7 +186,7 @@ public class TodoAppGui extends JFrame {
         }
     }
     private void updateTodo(){
-        tableModel.getRowCount();
+        // tableModel.getRowCount();
         int row = todoTable.getSelectedRow();
         if(row < 0){
             JOptionPane.showMessageDialog(this, "Please select a todo to update", "Selection Error", JOptionPane.WARNING_MESSAGE);
@@ -259,7 +262,7 @@ public class TodoAppGui extends JFrame {
             
             }
             catch(SQLException e){
-                JOptionPane.showMessageDialog(this, "Error deleting todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error filter todo: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace(); 
             }
 

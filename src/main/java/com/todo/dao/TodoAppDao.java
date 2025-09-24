@@ -120,8 +120,7 @@ public class TodoAppDao {
     }
     public boolean updateTodo(Todo todo) throws SQLException {
         try (Connection conn = db.getDBConnection();
-            PreparedStatement stmt = conn.prepareStatement(UPDATE_TODO);
-            
+            PreparedStatement stmt = conn.prepareStatement(UPDATE_TODO);            
         ){
             stmt.setString(1, todo.getTitle());
             stmt.setString(2, todo.getDescription());
